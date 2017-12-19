@@ -1,0 +1,31 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #D32F2F;
+    color: white;
+    padding: 10px;
+}
+
+header ,main {
+
+}
+
+nav {
+    background: #F44336;
+    color: white;
+}
+
+article {
+    padding: 20px;
+    min-height: 90%;
+}
+
+footer {
+    background: black;
+    color: white;
+    padding: 10px;
+}

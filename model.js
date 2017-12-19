@@ -8,7 +8,7 @@ exports.UserSchema = new Schema({
 	name: String,
 	email: String,
 	nickname: String,
-	join_date: {type:Date, default: Date.now}
+	session: String
 });
 
 exports.UserFollowSchema = new Schema({
