@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
+exports.UserSchema = new Schema({
 	_id: Schema.Types.ObjectId,
 	user_id: String,
 	password: String,
@@ -10,18 +11,18 @@ var UserSchema = new Schema({
 	join_date: {type:Date, default: Date.now}
 });
 
-var UserFollowSchema = new Schema({
+exports.UserFollowSchema = new Schema({
 	user_id: String,
 	follow_user_id: String
 });
 
-var UserFollowerSchema = new Schema({
+exports.UserFollowerSchema = new Schema({
 	user_id: String,
 	follower_user_id: String
 
 });
 
-var MusicSchema = new Schema({
+exports.MusicSchema = new Schema({
 	music_id: Schema.Types.ObjectId,
 	user_id: String,
 	original_link: String,
@@ -30,13 +31,13 @@ var MusicSchema = new Schema({
 
 });
 
-var MusicSharedSchema = new Schema({
+exports.MusicSharedSchema = new Schema({
 	music_id: String,
 	copy_music_link: String,
 	
 });
 
-var MusicLikeSchema = new Schema({
+exports.MusicLikeSchema = new Schema({
 	music_id: String,
 	nickname: String,
 
