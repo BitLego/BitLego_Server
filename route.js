@@ -13,20 +13,29 @@ router.get('/', (req, res) => {
 		});
 
 router.post('/register', (req, res) => {
-		console.log(req);
+		var response;
+		console.log(req.body.user_id , req.body.password , req.body.name , req.body.email , req.body.nickname);
+		if (req.body.user_id == '' || req.body.password == '' || req.body.name == '' || req.body.email == '' || req.body.nickname == ''){
+		response = false;
+		res.send({'status':response});
+		}
+		else{
 		User.find({ user_id: req.body.user_id }, (err, user) => {
 				if (user != ''){
-				res.send('register : already have account');
+				response = false;
+				res.send({'status':response});
 				}
 				else {
-				User.collection.insert({ user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64'), name: req.body.name, email : req.body.email, nickname: req.body.nickname }, (err, user) => {
-						res.send('register : success');
+				User.collection.insert({user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64'), name: req.body.name, email : req.body.email, nickname: req.body.nickname }, (err, user) => {
+						response = true;
+						res.send({'status':response});
 						});
 				}
-				});
+				});}
 		});
 
-router.post('/login', (req, res) => { 
+router.post('/login', (req, res) => {
+		if (req.body.user_id == '' || req.body.password == ''){ 
 		User.find({ user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64') }, (err, user) => {
 				user = user[0];
 
@@ -42,9 +51,12 @@ router.post('/login', (req, res) => {
 				User.update({_id:user._id},{$set: {session:session_id}},function(err, result) {
 						console.log(result);
 						});
-				res.send( 'session : '+session_id );
+				res.send( {'session' : session_id} );
 				});
-		});
+		}else{
+		res.send({'status':false});
+		}
+});
 
 router.get('/:id', (req,res) => {
 		User.find({user_id: req.params.id}, (err, user) => {
@@ -54,10 +66,14 @@ router.get('/:id', (req,res) => {
 
 router.post('/user/information', (req, res) => {
 		user_session = req.body.session;
+		if (user_session == ''){
+		res.send('status:false');
+		}else{
 		User.find({ session: user_session }, (err, user) => {
-			user = user[0];
-			res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname});
-			}); 
+				user = user[0];
+				res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname});
+				}); 
 		});
+}
 
 module.exports = router;
