@@ -31,16 +31,16 @@ router.post('/login', (req, res) => {
 				user = user[0];
 
 				var sha = crypto.createHash('sha256');
-    				sha.update(Math.random().toString());
+				sha.update(Math.random().toString());
 				hash = String(sha.digest('hex'));
 				session_id = user._id + hash;
 
 				sha = crypto.createHash('sha256');
 				sha.update(session_id);
-				session_id = String(sha.digest('base64'));
+				session_id = String(sha.digest('hex'));
 
 				User.update({_id:user._id},{$set: {session:session_id}},function(err, result) {
-					console.log(result);
+						console.log(result);
 						});
 				res.send( 'session : '+session_id );
 				});
@@ -50,6 +50,14 @@ router.get('/:id', (req,res) => {
 		User.find({user_id: req.params.id}, (err, user) => {
 				res.send(user);
 				});
+		});
+
+router.post('/user/information', (req, res) => {
+		user_session = req.body.session;
+		User.find({ session: user_session }, (err, user) => {
+			user = user[0];
+			res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname});
+			}); 
 		});
 
 module.exports = router;
