@@ -16,11 +16,6 @@ exports.UserFollowSchema = new Schema({
 	follow_user_id: String
 });
 
-exports.UserFollowerSchema = new Schema({
-	user_id: String,
-	follower_user_id: String
-
-});
 
 exports.MusicSchema = new Schema({
 	music_id: Schema.Types.ObjectId,
