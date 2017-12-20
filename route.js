@@ -29,12 +29,20 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => { 
 		User.find({ user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64') }, (err, user) => {
 				user = user[0];
-				req.session.id = user._id;
-				var sess = req.session.id;
-				User.update({_id:user._id},{$set: {session:sess}},function(err, result) {
 
+				var sha = crypto.createHash('sha256');
+    				sha.update(Math.random().toString());
+				hash = String(sha.digest('hex'));
+				session_id = user._id + hash;
+
+				sha = crypto.createHash('sha256');
+				sha.update(session_id);
+				session_id = String(sha.digest('base64'));
+
+				User.update({_id:user._id},{$set: {session:session_id}},function(err, result) {
+					console.log(result);
 						});
-				res.send( 'session : '+sess );
+				res.send( 'session : '+session_id );
 				});
 		});
 
