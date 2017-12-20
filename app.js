@@ -17,7 +17,7 @@ app.use( expressSession ( {
 }));
 
 app.use('/user', userRoute);
-app.use('/follow', userFollowRoute);
+app.use('/', userFollowRoute);
 
 app.listen(9949, () => {
   console.log('Express App on port 9949!');

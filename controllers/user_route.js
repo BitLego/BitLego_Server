@@ -6,7 +6,8 @@ const mongoose = require('mongoose')
 const crypto = require('crypto');
 
 
-var User = mongoose.model('UserSchema', db.UserSchema)
+var User = mongoose.model('UserSchema', db.UserSchema);
+var Follow = mongoose.model('UserFollowSchema', db.UserFollowSchema);
 
 router.get('/', (req, res) => {
 		res.end('test');
@@ -74,6 +75,40 @@ router.post('/information', (req, res) => {
 				res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname});
 				}); 
 		}
+});
+
+router.post('/:userId/follow/:followUserId', (req, res) => {
+	if (req.params.userId == '' || req.params.followUserId == '') {
+		res.send({ 'status': false });
+	} else {
+		Follow.collection.insert({ user_id: req.params.userId, follow_user_id: req.params.followUserId }, (err, records) => {
+			if (records.result.ok === 1 && records.result.n === 1) {
+				res.send({ 'status': true });
+			} else {
+				res.send({ 'status': false });
+			}
+		});
+	}
+});
+
+router.get('/:userId/followings', (req, res) => {
+	if (req.params.userId == '') {
+		res.send({ 'status': false });
+	} else {
+		Follow.find({ user_id: req.params.userId }, (err, follow) => {
+			res.send(follow);
+		});
+	}
+});
+
+router.get('/:userId/followers', (req, res) => {
+	if (req.params.userId == '') {
+		res.send({ 'status': false });
+	} else {
+		Follow.find({ follow_user_id: req.params.userId }, (err, follow) => {
+			res.send(follow);
+		});
+	}
 });
 
 module.exports = router;
