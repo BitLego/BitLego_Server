@@ -1,9 +1,9 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const db = require('/home/legobit/database/db.js'); 
-const userRoute = require('/home/legobit/user_route.js');
-const userFollowRoute = require('/home/legobit/user_follow_route.js');
+const db = require('./database/db.js'); 
+const userRoute = require('./controllers/user_route.js');
+const userFollowRoute = require('./controllers/user_follow_route.js');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 
