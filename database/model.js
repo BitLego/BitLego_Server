@@ -8,6 +8,7 @@ exports.UserSchema = new Schema({
 	name: String,
 	email: String,
 	nickname: String,
+	profile: String,
 	session: String
 });
 

@@ -4,8 +4,9 @@ const router = express.Router();
 const db = require('../database/model.js')
 const mongoose = require('mongoose')
 const crypto = require('crypto');
+const multer = require('multer');
 
-
+var upload = multer({ dest: 'profile/' });
 var User = mongoose.model('UserSchema', db.UserSchema)
 
 router.get('/', (req, res) => {
@@ -69,11 +70,24 @@ router.post('/information', (req, res) => {
 		if (user_session == ''){
 		res.send('status:false');
 		}else{
+		console.log(user_session);
 		User.find({ session: user_session }, (err, user) => {
+			//	console.log(user);
 				user = user[0];
-				res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname});
+			//	console.log(user);
+				res.send({'user_id': user.user_id, 'name': user.name, 'email': user.email, 'nickname': user.nickname, 'profile': user.profile});
 				}); 
 		}
+});
+
+router.post('/profile', upload.single('profile'), function(req, res){
+	if (req.file.filename === '' || req.body.session === ''){
+                res.send({'status':false});
+	}
+	else{
+	User.update({session: req.body.session}, {$set: {profile : req.file.filename}}, function(err, result) {
+		res.send({'status':true});
+	});}
 });
 
 module.exports = router;

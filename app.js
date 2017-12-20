@@ -15,7 +15,7 @@ app.use( expressSession ( {
 	resave: false,
 	cookie: {expire: new Date(Date.now+60*60), singed: true} 
 }));
-
+app.use(express.static('profile'));
 app.use('/user', userRoute);
 app.use('/follow', userFollowRoute);
 
