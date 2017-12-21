@@ -16,13 +16,13 @@ router.get('/', (req, res) => {
 router.post('/register', (req, res) => {
 		var response;
 		console.log(req.body.user_id , req.body.password , req.body.name , req.body.email , req.body.nickname);
-		if (req.body.user_id == '' || req.body.password == '' || req.body.name == '' || req.body.email == '' || req.body.nickname == ''){
+		if (req.body.user_id === undefined || req.body.password === undefined || req.body.name === undefined || req.body.email === undefined || req.body.nickname === undefined){
 		response = false;
 		res.send({'status':response});
 		}
 		else{
 		User.find({ user_id: req.body.user_id }, (err, user) => {
-				if (user != ''){
+				if (user !== undefined){
 				response = false;
 				res.send({'status':response});
 				}
@@ -36,8 +36,9 @@ router.post('/register', (req, res) => {
 		});
 
 router.post('/login', (req, res) => {
-		if (req.body.user_id == '' || req.body.password == ''){ 
-		User.find({ user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64') }, (err, user) => {
+		if (req.headers.user_id !== undefined || req.headers.password !== undefined){
+		console.log(req.headers.user_id); 
+		User.find({ user_id: req.headers.user_id, password: crypto.createHash('sha512').update(req.headers.password).digest('base64') }, (err, user) => {
 				user = user[0];
 
 				var sha = crypto.createHash('sha256');
@@ -67,8 +68,8 @@ router.get('/:id', (req,res) => {
 
 router.post('/information', (req, res) => {
 		user_session = req.body.session;
-		if (user_session == ''){
-		res.send('status:false');
+		if (user_session === undefined){
+		res.send({'status':false});
 		}else{
 		console.log(user_session);
 		User.find({ session: user_session }, (err, user) => {
@@ -81,7 +82,7 @@ router.post('/information', (req, res) => {
 });
 
 router.post('/profile', upload.single('profile'), function(req, res){
-	if (req.file.filename === '' || req.body.session === ''){
+	if (req.file.filename === undefined || req.body.session === undefined){
                 res.send({'status':false});
 	}
 	else{
