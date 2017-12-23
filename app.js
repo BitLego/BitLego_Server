@@ -4,6 +4,7 @@ const app = express();
 const db = require('./database/db.js'); 
 const userRoute = require('./controllers/user_route.js');
 const userFollowRoute = require('./controllers/user_follow_route.js');
+const musicRoute =require('./controllers/music_route.js');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 
@@ -16,8 +17,12 @@ app.use( expressSession ( {
 	cookie: {expire: new Date(Date.now+60*60), singed: true} 
 }));
 app.use(express.static('profile'));
+app.use(express.static('music'));
+app.use(express({limit: '200mb'}));
+
 app.use('/user', userRoute);
 app.use('/follow', userFollowRoute);
+app.use('/music', musicRoute);
 
 app.listen(9949, () => {
   console.log('Express App on port 9949!');
