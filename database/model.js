@@ -23,7 +23,9 @@ exports.MusicSchema = new Schema({
 	user_id: String,
 	original_link: String,
 	title: String,
+	like: Number,
 	link: String,
+	photo: String,
 
 });
 
