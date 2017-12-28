@@ -179,3 +179,9 @@ typings/
 .history
 
 # End of https://www.gitignore.io/api/git,node,intellij,jetbrains,visualstudiocode
+
+# Uploaded music files
+music/
+
+# Uploaded profile images
+profile/
