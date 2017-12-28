@@ -8,15 +8,15 @@ var Follow = mongoose.model('UserFollowSchema', db.UserFollowSchema);
 
 router.post('/set', (req, res) => {
 		console.log(req.headers.session);
-		console.log(req.headers.follow_user_id);
+		console.log(req.headers.follow_user_nickname);
 		req_session = req.body.session;
-		if ( req.headers.session === undefined || req.headers.follow_user_id === undefined){
+		if ( req.headers.session === undefined || req.headers.follow_user_nickname === undefined){
 		res.send({'status':false});	
 		}else{
 		User.find({ session: req.headers.session }, (err, user) => {
 				if (user !== undefined){
 				user = user[0];
-				Follow.collection.insert({ user_id: user.user_id, follow: req.headers.follow_user_id }, (err, result) => {
+				Follow.collection.insert({ nickname: user.nickname, follow_user_nickname: req.headers.follow_user_nickname }, (err, result) => {
 						res.send(result);
 						});}
 				else {
@@ -27,21 +27,20 @@ router.post('/set', (req, res) => {
 		});
 
 
-router.get('/follow/:user_id', (req, res) => {
+router.get('/follow/:nickname', (req, res) => {
 		if (req.params.user_id === undefined){
 		res.send({'status':false});
 		}else{
-		Follow.find({ user_id: req.params.user_id }, (err, follow) => {
+		Follow.find({ nickname: req.params.nickname }, (err, follow) => {
 				res.send(follow);
 				});}
 		});
 
-router.get('/follower/:user_id', (req,res) => { 
-		if (req.params.user_id === undefined){
+router.get('/follower/:nickname', (req,res) => { 
+		if (req.params.nickname === undefined){
 		res.send({'status':false});
 		}else{
-		Follow.find({ follow : req.params.user_id }, (err, follow) => {
-				console.log(req.params.user_id);
+		Follow.find({ follow_user_nickname : req.params.nickname }, (err, follow) => {
 				res.send(follow);
 				});
 		}
@@ -49,15 +48,13 @@ router.get('/follower/:user_id', (req,res) => {
 		});
 
 router.post('/unfollow', (req,res) => {
-		console.log(req.headers.session);
-		console.log(req.headers.unfollow_user_id);
-		if(req.headers.session === undefined || req.headers.unfollow_user_id === undefined){
+		if(req.headers.session === undefined || req.headers.unfollow_user_nickname === undefined){
 		res.send({'status':false});
 		}else{
 		User.find({ session: req.headers.session }, (err, user) => {
 				if (user !== undefined){
 				user = user[0];
-				Follow.remove({ user_id : user.user_id, follow : req.headers.unfollow_user_id }, function(err) {
+				Follow.remove({ nickname : user.nickname, follow_user_nickname : req.headers.unfollow_user_nickname }, function(err) {
 						if (!err) {
 						res.send({'status':true});
 						}
