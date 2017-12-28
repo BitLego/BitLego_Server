@@ -8,7 +8,8 @@ const musicRoute =require('./controllers/music_route.js');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 
-app.use(bodyParser());
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 db();
 app.use( expressSession ( {
 	secret : 'L3g0Bit',
@@ -18,8 +19,7 @@ app.use( expressSession ( {
 }));
 app.use(express.static('profile'));
 app.use(express.static('music'));
-app.use(express({limit: '200mb'}));
-
+	
 app.use('/user', userRoute);
 app.use('/follow', userFollowRoute);
 app.use('/music', musicRoute);

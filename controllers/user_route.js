@@ -16,23 +16,13 @@ router.get('/', (req, res) => {
 router.post('/register', (req, res) => {
 		var response;
 		console.log(req.body.user_id , req.body.password , req.body.name , req.body.email , req.body.nickname);
-		if (req.body.user_id === undefined || req.body.password === undefined || req.body.name === undefined || req.body.email === undefined || req.body.nickname === undefined){
-		response = false;
-		res.send({'status':response});
-		}
-		else{
 		User.find({ user_id: req.body.user_id }, (err, user) => {
-				if (user !== undefined){
-				response = false;
-				res.send({'status':response});
-				}
-				else {
 				User.collection.insert({user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64'), name: req.body.name, email : req.body.email, nickname: req.body.nickname }, (err, user) => {
 						response = true;
-						res.send({'status':response});
+						res.send({'status':err});
 						});
-				}
-				});}
+				
+				});
 		});
 
 router.post('/login', (req, res) => {
