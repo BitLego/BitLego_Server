@@ -7,64 +7,73 @@ var User = mongoose.model('UserSchema', db.UserSchema);
 var Follow = mongoose.model('UserFollowSchema', db.UserFollowSchema);
 
 router.post('/set', (req, res) => {
-		console.log(req.headers.session);
-		console.log(req.headers.follow_user_nickname);
-		req_session = req.body.session;
-		if ( req.headers.session === undefined || req.headers.follow_user_nickname === undefined){
-		res.send({'status':false});	
-		}else{
 		User.find({ session: req.headers.session }, (err, user) => {
-				if (user !== undefined){
+				if(err){
+					res.send({'status':err});
+				}else{
 				user = user[0];
-				Follow.collection.insert({ nickname: user.nickname, follow_user_nickname: req.headers.follow_user_nickname }, (err, result) => {
+				Follow.find({nickname: user.nickname, follow_user_nickname: req.body.follow_user_nickname}, (err, follow) => {
+					if(follow[0]){
+					res.send({'status':'already follow'});
+					}else{
+					Follow.collection.insert({ nickname: user.nickname, follow_user_nickname: req.body.follow_user_nickname }, (err, result) => {
+						if(!err){
 						res.send(result);
-						});}
-				else {
-				res.send({'status':false})
-				}	
-
+						}
+						});}	
 				});}
 		});
+});
 
 
 router.get('/follow/:nickname', (req, res) => {
-		if (req.params.user_id === undefined){
-		res.send({'status':false});
-		}else{
 		Follow.find({ nickname: req.params.nickname }, (err, follow) => {
+				if(!err){
 				res.send(follow);
-				});}
+				}
+				});
 		});
+
+router.get('/follow_count/:nickname', (req,res) => {
+		Follow.count({nickname: req.params.nickname}, function(err,count){
+		if(!err){
+			res.send({'count':count});
+		}		
+	});
+});
 
 router.get('/follower/:nickname', (req,res) => { 
-		if (req.params.nickname === undefined){
-		res.send({'status':false});
-		}else{
 		Follow.find({ follow_user_nickname : req.params.nickname }, (err, follow) => {
+				if(!err){
 				res.send(follow);
+				}
 				});
-		}
-
 		});
+router.get('/follower_count/:nickname', (req,res) => {
+                Follow.count({ follow_user_nickname: req.params.nickname}, function(err,count){
+                if(!err){
+                        res.send({'count':count});
+                }
+        });
+});
 
 router.post('/unfollow', (req,res) => {
-		if(req.headers.session === undefined || req.headers.unfollow_user_nickname === undefined){
-		res.send({'status':false});
-		}else{
 		User.find({ session: req.headers.session }, (err, user) => {
-				if (user !== undefined){
+				if(err){
+					res.send({'status':err});
+				}else{
 				user = user[0];
-				Follow.remove({ nickname : user.nickname, follow_user_nickname : req.headers.unfollow_user_nickname }, function(err) {
+				Follow.remove({ nickname : user.nickname, follow_user_nickname : req.body.unfollow_user_nickname }, function(err) {
 						if (!err) {
-						res.send({'status':true});
+						res.send({'status':err});
 						}
 						else {
-						res.send({'status':false});
+						res.send({'status':err});
 						}
 						});
 				}
 				});
-		}
+		
 
 		});
 
