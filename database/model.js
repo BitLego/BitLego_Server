@@ -28,11 +28,9 @@ exports.MusicSchema = new Schema({
 
 });
 
-exports.MusicSharedSchema = new Schema({
+exports.MusicShareSchema = new Schema({
 	music_id: String,
-	original_music_link: String,
-	copy_music_link: String,
-		
+	copy_music_id: String
 });
 
 exports.MusicLikeSchema = new Schema({
