@@ -41,18 +41,18 @@ router.post('/merge', cpUpload, (req, res) => {
 			return;
 		}
 
-		const nickname = user.nickname;
-		const title = req.body.title;
-		const musicLink = req.files['music'][0].filename;
-		const musicPhoto = req.files['photo'][0].filename;
-		const copyMusicIds = req.body.copy_music_ids;
+		var nickname = user.nickname;
+		var title = req.body.title;
+		var musicLink = req.files['music'][0].filename;
+		var musicPhoto = req.files['photo'][0].filename;
+		var copyMusicIds = req.body.copy_music_ids;
 
 		Music.findOne({ nickname: user.nickname, title: req.body.title }, (err, music) => {
 			if (music) {
 				res.send({ 'status': 'already uploaded' });
 				return;
 			} else {
-				let music = new Music();
+				var music = new Music();
 				music.nickname = nickname;
 				music.title = title;
 				music.link = musicLink;
@@ -63,8 +63,8 @@ router.post('/merge', cpUpload, (req, res) => {
 						return;
 					}
 
-					for (let copyMusicId of copyMusicIds) {
-						let musicShare = new MusicShare();
+					for (var copyMusicId of copyMusicIds) {
+						var musicShare = new MusicShare();
 						musicShare.music_id = music.music_id;
 						musicShare.copy_music_id = copyMusicId;
 						musicShare.save((err) => {

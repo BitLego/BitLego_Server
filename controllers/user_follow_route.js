@@ -12,6 +12,15 @@ router.post('/set', (req, res) => {
 					res.send({'status':err});
 				}else{
 				user = user[0];
+				console.log(user.nickname, req.body.follow_user_nickname);
+				if(user.nickname === req.body.follow_user_nickname){
+					res.send({'status':'you can\'t following yourself'});
+				}else{
+				User.find({nickname:req.body.follow_user_nickname}, (err,follow)=>{
+				console.log(user[0]);
+				if(user[0] === undefined){
+					res.send({'status':'doesn\'t exit user nickname'});
+				}else{
 				Follow.find({nickname: user.nickname, follow_user_nickname: req.body.follow_user_nickname}, (err, follow) => {
 					if(follow[0]){
 					res.send({'status':'already follow'});
@@ -22,6 +31,8 @@ router.post('/set', (req, res) => {
 						}
 						});}	
 				});}
+
+				})};}
 		});
 });
 
@@ -55,6 +66,17 @@ router.get('/follower_count/:nickname', (req,res) => {
                         res.send({'count':count});
                 }
         });
+});
+
+router.get('/count/:nickname', (req,res) => {
+                Follow.count({ nickname: req.params.nickname }, (err, follow_count) => {
+                        if(!err){
+				Follow.count({ follow_user_nickname: req.params.nickname}, (err, follower_count) => {
+                		if(!err){
+                        	res.send({'follow_count':follow_count, 'follwer_count':follower_count});
+                		}});
+                        }
+                });
 });
 
 router.post('/unfollow', (req,res) => {

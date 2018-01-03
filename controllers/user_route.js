@@ -15,13 +15,17 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
 		var response;
+		console.log(req.body);
 		User.find({$or : [{user_id: req.body.user_id}, {nickname: req.body.nickname}]}, (err, user) => {
 				if(user[0]){
 					res.send({'status':'aleady joined'});
 				}else{
 				User.collection.insert({user_id: req.body.user_id, password: crypto.createHash('sha512').update(req.body.password).digest('base64'), name: req.body.name, email : req.body.email, nickname: req.body.nickname }, (err, user) => {
-						response = true;
+						if(!err){
+						res.send({'status':'success'});
+						}else{	
 						res.send({'status':err});
+						}
 						});
 				}
 				});
