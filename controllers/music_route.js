@@ -8,6 +8,7 @@ var User = mongoose.model('UserSchema', db.UserSchema);
 var Music = mongoose.model('MusicSchema', db.MusicSchema);
 var MusicShare = mongoose.model('MusicShareSchema', db.MusicShareSchema)
 var MusicLike = mongoose.model('MusicLikeSchema', db.MusicLikeSchema);
+var MusicComment = mongoose.model('MusicCommentSchema', db.MusicCommentSchema);
 
 router.post('/upload', upload.any(), function (req, res) {
 	User.find({ session: req.headers.session }, (err, user) => {
@@ -33,7 +34,7 @@ router.post('/upload', upload.any(), function (req, res) {
 				var minutes = now.getMinutes();
 				
 				var time = year+":"+month+":"+date+":"+hours+":"+minutes
-				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo, timestampe: time}, (err, result) => {
+				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo, timestamp: time}, (err, result) => {
 					res.send({ 'status': err });
 				});
 			}
@@ -109,6 +110,20 @@ router.post('/find', (req, res) => {
 
 });
 
+router.post('/detail', (req, res) => {
+	Music.find({_id: req.body.music_id}, (err, music) => {
+		music = music[0];
+		if(music){
+			MusicComment.find({ music_id: music._id }, (err, comment) => {
+				res.send({'music':music, 'comment':comment});
+			});	
+		}else{
+			res.send({'success':'doesn\'t exist music'});
+		}
+	});
+
+});
+
 router.post('/myMusic', (req, res) => {
 	User.find({ session: req.headers.session }, (err, user) => {
 		user = user[0];
@@ -145,6 +160,28 @@ router.post('/who_like', (req, res) => {
 		if (!err) {
 			res.send(music);
 		}
+	});
+});
+
+
+router.post('/comment', (req,res) => {
+        User.find({ session: req.headers.session }, (err, user) => {
+                user = user[0];
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = now.getMonth()+1;
+                var date = now.getDate();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+		var time = year+":"+month+":"+date+":"+hours+":"+minutes
+	
+		MusicComment.collection.insert({music_id: req.body.music_id, nickname: user.nickname, comment: req.body.comment, timestamp:time}, (err, result) => {
+			if(!err){
+				res.send({'status':'success'});
+			}else{
+				res.send({'status':err});
+			}
+		});
 	});
 });
 module.exports = router;

@@ -25,7 +25,7 @@ exports.MusicSchema = new Schema({
 	link: String,
 	like: Number,
 	photo: String,
-	timestamep: String,
+	timestamp: String,
 
 });
 
@@ -38,4 +38,11 @@ exports.MusicLikeSchema = new Schema({
 	music_id: String,
 	nickname: String,
 
+});
+
+exports.MusicCommentSchema = new Schema({
+	music_id: String,
+	nickname: String,
+	comment: String,
+	timestamp : String,
 });
