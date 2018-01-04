@@ -10,6 +10,37 @@ var MusicShare = mongoose.model('MusicShareSchema', db.MusicShareSchema)
 var MusicLike = mongoose.model('MusicLikeSchema', db.MusicLikeSchema);
 var MusicComment = mongoose.model('MusicCommentSchema', db.MusicCommentSchema);
 
+router.get('/:page', (req, res) => {
+	var count = req.params.page-1;
+	count = parseInt(count);
+	if(count === -1 || count === 0){
+	Music.find().sort({'timestamp':'-1'}).limit(5).find(function (err, music){
+                res.send(music);
+        });	
+	}else{
+	count = count * 5
+	Music.find().sort({'timestamp':'-1'}).skip(count).limit(count).find(function (err, music){ 
+		res.send(music);	
+	});
+	}
+});
+
+router.get('/:count/:page', (req, res) => {
+        var page = req.params.page-1;
+        page = parseInt(page);
+        if(count === -1 || count === 0){
+        Music.find().sort({'timestamp':'-1'}).limit(5).find(function (err, music){
+                res.send(music);
+        });
+        }else{
+        count = count * 5
+        Music.find().sort({'timestamp':'-1'}).skip(count).limit(count).find(function (err, music){
+                res.send(music);
+        });
+        }
+});
+
+
 router.post('/upload', upload.any(), function (req, res) {
 	User.find({ session: req.headers.session }, (err, user) => {
 		user = user[0];
@@ -27,14 +58,7 @@ router.post('/upload', upload.any(), function (req, res) {
 				res.send({ 'status': 'already uploaded' });
 			} else {
 				var now = new Date();
-				var year = now.getFullYear();
-				var month = now.getMonth()+1;
-				var date = now.getDate();
-				var hours = now.getHours();
-				var minutes = now.getMinutes();
-				
-				var time = year+":"+month+":"+date+":"+hours+":"+minutes
-				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo, timestamp: time}, (err, result) => {
+				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo, timestamp: now.getTime()}, (err, result) => {
 					res.send({ 'status': err });
 				});
 			}
@@ -167,15 +191,8 @@ router.post('/who_like', (req, res) => {
 router.post('/comment', (req,res) => {
         User.find({ session: req.headers.session }, (err, user) => {
                 user = user[0];
-                var now = new Date();
-                var year = now.getFullYear();
-                var month = now.getMonth()+1;
-                var date = now.getDate();
-                var hours = now.getHours();
-                var minutes = now.getMinutes();
-		var time = year+":"+month+":"+date+":"+hours+":"+minutes
-	
-		MusicComment.collection.insert({music_id: req.body.music_id, nickname: user.nickname, comment: req.body.comment, timestamp:time}, (err, result) => {
+		var now = new Date();
+		MusicComment.collection.insert({music_id: req.body.music_id, nickname: user.nickname, comment: req.body.comment, timestamp : now.getTime()}, (err, result) => {
 			if(!err){
 				res.send({'status':'success'});
 			}else{

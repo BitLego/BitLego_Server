@@ -36,7 +36,7 @@ router.post('/login', (req, res) => {
 				user = user[0];
 				if(err){
 					res.send(err);
-				}else{
+				}else if (user){
 				var sha = crypto.createHash('sha256');
 				sha.update(Math.random().toString());
 				hash = String(sha.digest('hex'));
