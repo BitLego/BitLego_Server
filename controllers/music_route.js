@@ -25,7 +25,15 @@ router.post('/upload', upload.any(), function (req, res) {
 			if (music[0]) {
 				res.send({ 'status': 'already uploaded' });
 			} else {
-				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo }, (err, result) => {
+				var now = new Date();
+				var year = now.getFullYear();
+				var month = now.getMonth()+1;
+				var date = now.getDate();
+				var hours = now.getHours();
+				var minutes = now.getMinutes();
+				
+				var time = year+":"+month+":"+date+":"+hours+":"+minutes
+				Music.collection.insert({ nickname: user.nickname, title: req.body.title, link: music_link, photo: music_photo, timestampe: time}, (err, result) => {
 					res.send({ 'status': err });
 				});
 			}
